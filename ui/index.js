@@ -42,47 +42,57 @@ $(function(){
 
     return request(part, params).done(function(resp){
       renderState(resp);
-      renderAverage(resp);
     });
   };
 
   var computeAverage = function(state) {
-    var sum = 0;
-    var n = 0;
+    var sum = 0.0;
+    var n = 0.0;
     for(var k in (state.Voters || [])) {
       if(_.isUndefined(state.Voters[k].Vote)) {
         console.log('No Vote for ', state.Voters[k].Name);
-        return '?';
+        return 'NotDone';
       }
       var points = parseInt(state.Voters[k].Vote);
       if (_.isNaN(points)) {
-        console.log('points=' + state.Voters[k].Vote, );
-        return '?';
+        return '😱';
       }
       sum += points;
       ++n;
     }
-    if (n <= 0) { return '?'; }
     return (sum/n).toFixed(2);
   }
 
-  var renderAverage = function(state) {
-    var average = computeAverage(state);
+  var renderAverage = function(average) {
+    average = average == 'NotDone' ? '🤔' : average;
+    console.log('renderAverage',average);
     Average.find('span').html(average);
   };
 
-  var renderState = function(state) {
+  var renderState = function(state, forceShow) {
     var cloned = Voters.clone(true);
     cloned.empty(); // kill the obsolete rows
 
     // update the question but only if not focused(==has cursor)
     Question.find('input:not(:focus)').val(state.Question);
 
+    var average = computeAverage(state);
+    renderAverage(average);
+
+    var showVotes = forceShow || (average != 'NotDone');
+
     for(var k in state.Voters) {
       var voteri = state.Voters[k];
+
       var row = rowTemplate.clone(true);
       row.find('.Name').html(voteri.Name);
-      row.find('.Vote').html(buttonPointToLabel[voteri.Vote]);
+
+      var label = buttonPointToLabel[voteri.Vote];
+      if(!showVotes) {
+        label = !_.isUndefined(voteri.Vote) ? '🙈' : '🤔';
+      }
+      row.find('.Vote').html(label);
+
       cloned.append(row);
     }
 
