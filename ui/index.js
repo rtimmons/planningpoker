@@ -62,7 +62,7 @@ $(function(){
       ++n;
     }
     return allDone && allNumbers ?
-       (sum/n).toFixed(2)
+       (sum/(n||1)).toFixed(2)
     : (!allDone ? 'NotDone' : '😱');
   }
 
@@ -150,6 +150,7 @@ $(function(){
 
   Reset.click(function(){
     updateState('reset');
+    window.location.reload();
     return false;
   });
 
@@ -162,4 +163,21 @@ $(function(){
 
   Name.find('input').focus();
   Name.submit(() => false);
+
+  // TODO: support voting with keyboard
+  // could just .click() the respective buttons
+  // but this is capturing events when typing name 
+  // (but not question for some reason)
+  // so somebod with a C in their name would..like..clear the votes.
+  // $('body').keyup(e => {
+  //   if (e.which == 190) {} // .
+  //   if (e.which == 48)  {} // 0
+  //   if (e.which == 49)  {} // 1
+  //   if (e.which == 50)  {} // 2
+  //   if (e.which == 51)  {} // 3
+  //   if (e.which == 53)  {} // 5
+  //   if (e.which == 56)  {} // 8
+  //   if (e.which == 67)  {} // c
+  //   if (e.which == 81)  {} // q
+  // })
 });
