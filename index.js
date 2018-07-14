@@ -39,12 +39,14 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.use(cors());
 
+timestamp = function() { return new Date().getTime(); };
+
 const startState = {
   Question: "IDK",
   Voters: [
-    {"Name": "Ryan",    "Vote": "7"},
-    {"Name": "Deshawn", "Vote": "3"},
-    {"Name": "Maqbool", "Vote": "?"}
+    {"Name": "Ryan",    "Vote": "7", "LastVoteTS": timestamp()},
+    {"Name": "Deshawn", "Vote": "3", "LastVoteTS": timestamp()},
+    {"Name": "Maqbool", "Vote": "?", "LastVoteTS": timestamp()}
   ]
 };
 var state = deepcopy(startState);
@@ -73,6 +75,7 @@ var setState = function(question, vname, vote) {
 
   voter.Name = vname || voter.Name;
   voter.Vote = vote  || voter.Vote;
+  voter.LastVoteTS = timestamp();
 
   if (!existing) {
     state.Voters.push(voter);
