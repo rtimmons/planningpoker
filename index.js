@@ -27,7 +27,7 @@ reset:
 http://localhost:3000/reset.json
 
 kick:
-http://localhost:3000/kick.json?Name=Ryan
+http://localhost:3000/kick.json?Name=Abdul
 */
 
 var app = express();
@@ -44,10 +44,10 @@ app.use(express.static('ui'))
 timestamp = function() { return new Date().getTime(); };
 
 const startState = {
-  Question: "IDK",
+  Question: "So, uh, how's that Python 3 coming along?",
   Voters: [
     // for good experience on reset, keep the Vote values in-sync with <buttons> on html
-    {"Name": "Ryan",    "Vote": "7 Points", "LastVoteTS": timestamp()},
+    {"Name": "優音",   "Vote": "7 Points", "LastVoteTS": timestamp()},
     {"Name": "Deshawn", "Vote": "3 Points", "LastVoteTS": timestamp()},
     {"Name": "Maqbool", "Vote": "😫 Points", "LastVoteTS": timestamp()}
   ]
