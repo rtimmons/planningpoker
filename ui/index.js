@@ -78,4 +78,6 @@ $(function(){
     return false;
   })
 
+  Name.find('input').val('');
+
 });
