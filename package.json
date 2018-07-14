@@ -1,0 +1,19 @@
+{
+  "name": "express-server",
+  "version": "1.0.0",
+  "description": "api for smarterhome",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "stop": "pkill smhexprsrv"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "node-cache": "^4.2.0",
+    "request": "^2.87.0"
+  }
+}
