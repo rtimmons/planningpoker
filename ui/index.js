@@ -10,8 +10,7 @@ $(function(){
 
   var rowTemplate = Voters.find('.template').clone(true);
 
-  var MyName = 'Ryan'; // TODO
-
+  var MyName;
 
   var buttonLabelToPoint = {};
   var buttonPointToLabel = {};

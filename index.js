@@ -46,7 +46,8 @@ timestamp = function() { return new Date().getTime(); };
 const startState = {
   Question: "So, uh, how's that Python 3 coming along?",
   Voters: [
-    {"Name": "優音",   "Vote": "8", "LastVoteTS": timestamp()},
+    // 英津子 is "Etsuko" 👘
+    {"Name": "英津子",   "Vote": "8", "LastVoteTS": timestamp()},
     {"Name": "Deshawn", "Vote": "3", "LastVoteTS": timestamp()},
     {"Name": "Maqbool", "Vote": "😫?", "LastVoteTS": timestamp()}
   ]

@@ -10,7 +10,12 @@ body, input {
     background-color: red; /* 😹 */
 }
 
+#Buttons {
+    text-align: center;
+    margin-bottom: 0.5em;
+}
 #Buttons button {
+    font-size: 1.3em;
     margin: 2px;
 }
 input {
@@ -18,7 +23,7 @@ input {
 }
 #Question input {
     text-align: center;
-    font-family: Futura;
-    font-size: 2em;
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
 }
 
