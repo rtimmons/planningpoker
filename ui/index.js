@@ -24,7 +24,9 @@ $(function(){
   };
 
   var updateState = function(part, params) {
-    part = part || 'state';
+    part   = part   || 'state';
+    params = params || {};
+
     return request(part, params).done(function(resp){
       renderState(resp);
     });
@@ -32,8 +34,9 @@ $(function(){
 
   var renderState = function(state) {
     var cloned = Voters.clone(true);
-    cloned.empty();
+    cloned.empty(); // kill the obsolete rows
 
+    // update the question but only if not focused(==has cursor)
     Question.find('input:not(:focus)').val(state.Question);
 
     for(var k in state.Voters) {
@@ -44,19 +47,22 @@ $(function(){
       cloned.append(row);
     }
 
+    // std::swap exists in jQuery
     Voters.replaceWith(cloned);
     Voters = cloned;
   };
 
   setInterval(updateState, 1000);
 
+  // need to use this versus .each cuz we create new a.kicks via .clone()
   Voters.on('click', 'a.kick', function(){
+    // ohgod it's hard to be a parent these days
     updateState('kick',{Name: $(this).parent().parent().parent().find('.Name').html().trim()});
     return false;
   });
 
   $('#Buttons button').each(function(){
-    var self = $(this);
+    var self = $(this); // prolly too pedantic
     self.click(() => {
       updateState('set', {Vote: self.html(), Name: MyName});
       return false;
