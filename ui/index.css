@@ -6,6 +6,9 @@ body, input {
     margin-bottom: 3em;
 }
 
+#Name input:focus {
+    background-color: red; /* 😹 */
+}
 
 #Buttons button {
     margin: 2px;
@@ -18,3 +21,4 @@ input {
     font-family: Futura;
     font-size: 2em;
 }
+

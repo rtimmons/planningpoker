@@ -63,11 +63,14 @@ $(function(){
     });
   });
 
+  // 😹
   Name.find('input').focusout(function(){
     MyName = $(this).val();
     updateState('set', {Name: MyName});
     return false;
   });
+
+  // DRY mucho, vos?
 
   Question.find('input').keyup(function(){
     updateState('set', {Question: $(this).val()});
@@ -85,5 +88,6 @@ $(function(){
   });
 
   Name.find('input').val('');
-
+  Name.find('input').focus();
+  Name.submit(() => false);
 });
