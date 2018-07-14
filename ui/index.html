@@ -12,7 +12,7 @@
     <link href="vendor/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="starter.css" rel="stylesheet">
+    <link href="index.css" rel="stylesheet">
   </head>
 
   <body>
@@ -26,49 +26,38 @@
         <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p> -->
 
 
+        <div id="Question">
+            <input class="input" type="text" name="Question">
+        </div>
+
         <div id="Name">
             <strong>Name</strong>:
                 <input class="input" type="text" name="Name">
         </div>
 
-        <br><br>
-
-        <div id="Question">
-            <strong>Question</strong>:
-            <input class="input" type="text" name="Question">
-        </div>
-
-        <hr>
-
-        <table id="Buttons">
-            <tr>
-                <td><button type="button" class="btn btn-info" href="#">    0 Points    </button></td>
-                <td><button type="button" class="btn btn-info" href="#">    ½ Point     </button></td>
-                <td><button type="button" class="btn btn-info" href="#">    1 Point     </button></td>
-            </tr>
-            <tr>
-                <td><button type="button" class="btn btn-info" href="#">    2 Points    </button></td>
-                <td><button type="button" class="btn btn-info" href="#">    3 Points    </button></td>
-                <td><button type="button" class="btn btn-info" href="#">    5 Points    </button></td>
-            </tr>
-            <tr>
-                <td><button type="button" class="btn btn-info" href="#">    8 Points    </button></td>
-                <td><button type="button" class="btn btn-info" href="#">    13 Points   </button></td>
-                <td><button type="button" class="btn btn-info" href="#">    20 Points   </button></td>
-            </tr>
-            <tr>
-                <td><button type="button" class="btn btn-info" href="#">    40 Points   </button></td>
-                <td><button type="button" class="btn btn-info" href="#">    100 Points  </button></td>
-                <td><button type="button" class="btn btn-info" href="#">    ?           </button></td>
-            </tr>
+        <div id="Buttons">
+            <!--For good experience on reset, keep point labels in-sync with startState in server js-->
+            <button type="button" class="btn btn-info" href="#">    0 Points    </button>
+            <button type="button" class="btn btn-info" href="#">    ½ Point     </button>
+            <button type="button" class="btn btn-info" href="#">    1 Point     </button>
+            <button type="button" class="btn btn-info" href="#">    2 Points    </button>
+            <button type="button" class="btn btn-info" href="#">    3 Points    </button>
+            <button type="button" class="btn btn-info" href="#">    5 Points    </button>
+            <button type="button" class="btn btn-info" href="#">    8 Points    </button>
+            <button type="button" class="btn btn-info" href="#">    13 Points   </button>
+            <button type="button" class="btn btn-info" href="#">    20 Points   </button>
+            <button type="button" class="btn btn-info" href="#">    40 Points   </button>
+            <button type="button" class="btn btn-info" href="#">    100 Points  </button>
+            <button type="button" class="btn btn-info" href="#">    😫 Points   </button>
         </table>
 
 
         <table class="table voters" id="Voters">
+            <!-- TODO: make these specific width -->
             <tr class="template">
-                <td><span class="action"><a href="#" class="kick">❌</a></span></td>
-                <th><span class="Name"></span></th>
-                <th><span class="Vote"></span></th>
+                <td width="5%"><span class="action"><a href="#" class="kick">❌</a></span></td>
+                <th width="60%"><span class="Name">Loading...</span></th>
+                <td width="35%"><span class="Vote">...</span></td>
             </tr>
         </table>
 

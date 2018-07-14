@@ -46,9 +46,10 @@ timestamp = function() { return new Date().getTime(); };
 const startState = {
   Question: "IDK",
   Voters: [
-    {"Name": "Ryan",    "Vote": "7", "LastVoteTS": timestamp()},
-    {"Name": "Deshawn", "Vote": "3", "LastVoteTS": timestamp()},
-    {"Name": "Maqbool", "Vote": "?", "LastVoteTS": timestamp()}
+    // for good experience on reset, keep the Vote values in-sync with <buttons> on html
+    {"Name": "Ryan",    "Vote": "7 Points", "LastVoteTS": timestamp()},
+    {"Name": "Deshawn", "Vote": "3 Points", "LastVoteTS": timestamp()},
+    {"Name": "Maqbool", "Vote": "😫 Points", "LastVoteTS": timestamp()}
   ]
 };
 var state = deepcopy(startState);
