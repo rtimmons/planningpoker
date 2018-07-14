@@ -48,24 +48,27 @@ $(function(){
   var computeAverage = function(state) {
     var sum = 0.0;
     var n = 0.0;
+
+    var allDone = true;
+    var allNumbers = true;
     for(var k in (state.Voters || [])) {
-      if(_.isUndefined(state.Voters[k].Vote)) {
-        console.log('No Vote for ', state.Voters[k].Name);
-        return 'NotDone';
+      if (_.isUndefined(state.Voters[k].Vote)) {
+        allDone = false;
       }
       var points = parseInt(state.Voters[k].Vote);
       if (_.isNaN(points)) {
-        return '😱';
+        allNumbers = false;
       }
       sum += points;
       ++n;
     }
-    return (sum/n).toFixed(2);
+    return allDone && allNumbers ?
+       (sum/n).toFixed(2)
+    : (!allDone ? 'NotDone' : '😱');
   }
 
   var renderAverage = function(average) {
     average = average == 'NotDone' ? '🤔' : average;
-    console.log('renderAverage',average);
     Average.find('span').html(average);
   };
 
@@ -121,12 +124,23 @@ $(function(){
     });
   });
 
-  // 😹
-  Name.find('input').focusout(function(){
+  var onNameChange = function(){
     MyName = $(this).val();
     updateState('set', {Name: MyName});
+
     return false;
-  });
+  };
+
+  // 😹
+  Name.find('input')
+    .blur(onNameChange)
+    .submit(onNameChange)
+    .keyup(function(e){
+      var code = e.which;
+      if (code == 13) {
+        return $(this).blur();
+      }
+    });
 
   // DRY mucho, vos?
 
@@ -146,6 +160,7 @@ $(function(){
   });
 
   Name.find('input').val('');
+
   Name.find('input').focus();
   Name.submit(() => false);
 });
