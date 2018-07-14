@@ -1,7 +1,8 @@
 $(function(){
 
   var url = function(part) {
-    return 'http://localhost:3000' + '/' + part + '.json';
+    var loc = window.location.origin != "null" ? window.location.origin : 'http://localhost:3000';
+    return loc + '/' + part + '.json';
   };
 
   var request = function(part, params) {

@@ -39,6 +39,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.use(cors());
 
+app.use(express.static('ui'))
+
 timestamp = function() { return new Date().getTime(); };
 
 const startState = {
@@ -112,5 +114,6 @@ app.get('/set.json',    setStateHandler);
 app.get('/kick.json',   kickHandler);
 app.get('/reset.json',  resetHandler);
 
+app.use('/ui', express.static('ui'))
 
 app.listen(3000, () => console.log('Listening on port 3000!'));
