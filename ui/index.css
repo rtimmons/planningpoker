@@ -1,9 +1,19 @@
-body {
+body, input {
     font-family: Futura;
 }
+#Name {
+    font-size: 0.75em;
+    margin-bottom: 3em;
+}
+
+
 #Buttons button {
     margin: 2px;
 }
 input {
     width: 100%;
+}
+#Question input {
+    font-family: Futura;
+    font-size: 2em;
 }

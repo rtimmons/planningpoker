@@ -62,7 +62,7 @@ $(function(){
     });
   });
 
-  Name.find('input').change(function(){
+  Name.find('input').focusout(function(){
     MyName = $(this).val();
     updateState('set', {Name: MyName});
     return false;
