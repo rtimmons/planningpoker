@@ -1,5 +1,14 @@
 $(function(){
 
+  var Question = $('#Question');
+  var Name = $('#Name');
+  var Voters = $('#Voters');
+  var Reset = $('#Reset');
+  var rowTemplate = Voters.find('.template').clone(true);
+
+  var MyName = 'Ryan'; // TODO
+
+
   var url = function(part) {
     var loc = window.location.origin != "null" ? window.location.origin : 'http://localhost:3000';
     return loc + '/' + part + '.json';
@@ -19,14 +28,6 @@ $(function(){
       renderState(resp);
     });
   };
-
-  var Question = $('#Question');
-  var Name = $('#Name');
-  var Voters = $('#Voters');
-
-  var rowTemplate = Voters.find('.template').clone(true);
-
-  var MyName = 'Ryan'; // TODO
 
   var renderState = function(state) {
     var cloned = Voters.clone(true);
@@ -66,5 +67,10 @@ $(function(){
     updateState('set', {Question: $(this).val()});
     return false;
   });
+
+  Reset.click(function(){
+    updateState('reset');
+    return false;
+  })
 
 });
