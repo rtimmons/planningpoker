@@ -3,6 +3,7 @@ $(function(){
   var Question = $('#Question');
   var Name = $('#Name');
   var Voters = $('#Voters');
+  var Clear = $('#Clear');
   var Reset = $('#Reset');
   var rowTemplate = Voters.find('.template').clone(true);
 
@@ -76,7 +77,12 @@ $(function(){
   Reset.click(function(){
     updateState('reset');
     return false;
-  })
+  });
+
+  Clear.click(function(){
+    updateState('clear');
+    return false;
+  });
 
   Name.find('input').val('');
 

@@ -93,6 +93,12 @@ var reset = function() {
   state = deepcopy(startState);
 }
 
+var clear = function(vname) {
+  _.each(state.Voters, v => {
+    delete v.Vote;
+  });
+}
+
 var getStateHandler = function(req, res){
   res.header('Content-Type', 'application/json');
   res.send(JSON.stringify(state));
@@ -109,11 +115,17 @@ var resetHandler = function(req, res) {
   reset();
   return getStateHandler(req, res);
 }
+var clearHandler = function(req, res) {
+  clear();
+  return getStateHandler(req, res);
+};
+// these url routes suck
 
 app.get('/state.json',  getStateHandler);
 app.get('/set.json',    setStateHandler);
 app.get('/kick.json',   kickHandler);
 app.get('/reset.json',  resetHandler);
+app.get('/clear.json',  clearHandler);
 
 app.use('/ui', express.static('ui'))
 
