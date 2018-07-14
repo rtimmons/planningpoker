@@ -93,11 +93,11 @@ var reset = function() {
   state = deepcopy(startState);
 }
 
-var clear = function(vname) {
+var clear = function() {
   _.each(state.Voters, v => {
     delete v.Vote;
   });
-  delete state.Question;
+  // delete state.Question;
 }
 
 var getStateHandler = function(req, res){
