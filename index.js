@@ -3,6 +3,7 @@
 var express = require('express');
 var request = require('request');
 var cors = require('cors')
+var _ = require('underscore');
 
 const NodeCache = require( "node-cache" );
 
@@ -16,24 +17,52 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 // app.use(cors());
 
-var state = {
+const startState = {
   Question: "IDK",
-  Voters: [
+  Voters: 
+  
+  // {
+  //   "Ryan":     { "Vote": "7"   },
+  //   "Deshawn":  { "Vote": "100" },
+  //   "Paco":     { "Vote": "10"  },
+  //   "Maqbool":  { "Vote": "?"   },
+  // }
+  [
     {"Name": "Ryan",    "Vote": "7"},
     {"Name": "Deshawn", "Vote": "3"},
     {"Name": "Maqbool", "Vote": "?"}
   ]
 };
+var state = startState;
 
 // app.get('/b/:to', function(req, res){
 //   var url = redirs[req.params.to];
 //   req.pipe(request(url)).pipe(res);
 // });
 
-
-app.get('/state.json', function(req, res){
+var getState = function(req, res){
   res.header('Content-Type', 'application/json');
   res.send(JSON.stringify(state));
-});
+};
+var setState = function(req, res) {
+  res.header('Content-Type', 'application/json');
+  if (typeof req.params.Voter !== "undefined") {
+    state.Voters[req.params.Voter.Name] = state.Voters[req.params.Voter.Name] || {};
+    if (typeof req.params.Voter.Name !== "undefined") {
+      state.Voters[req.params.Voter].Name = req.params.Voter.Name;      
+    }
+    if (typeof req.params.Voter.Vote !== "undefined") {
+      state.Voters[req.params.Voter].Vote = req.params.Voter.Vote;      
+    }
+  }
+
+  if(typeof req.params.Question !== "undefined") {
+    state.Question = req.params.Question;
+  }
+};
+
+app.get('/state.json', getState);
+app.get('/set.json', setState);
+
 
 app.listen(3000, () => console.log('Listening on port 3000!'));
