@@ -46,10 +46,9 @@ timestamp = function() { return new Date().getTime(); };
 const startState = {
   Question: "So, uh, how's that Python 3 coming along?",
   Voters: [
-    // for good experience on reset, keep the Vote values in-sync with <buttons> on html
-    {"Name": "優音",   "Vote": "7 Points", "LastVoteTS": timestamp()},
-    {"Name": "Deshawn", "Vote": "3 Points", "LastVoteTS": timestamp()},
-    {"Name": "Maqbool", "Vote": "😫 Points", "LastVoteTS": timestamp()}
+    {"Name": "優音",   "Vote": "8", "LastVoteTS": timestamp()},
+    {"Name": "Deshawn", "Vote": "3", "LastVoteTS": timestamp()},
+    {"Name": "Maqbool", "Vote": "😫?", "LastVoteTS": timestamp()}
   ]
 };
 var state = deepcopy(startState);
@@ -83,7 +82,7 @@ var setState = function(question, vname, vote) {
   if (!existing) {
     state.Voters.push(voter);
   }
-}
+};
 
 var kick = function(vname) {
   state.Voters = _.reject(state.Voters, (v) => v.Name == vname);

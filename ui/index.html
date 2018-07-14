@@ -35,18 +35,18 @@
 
         <div id="Buttons">
             <!--For good experience on reset, keep point labels in-sync with startState in server js-->
-            <button type="button" class="btn btn-info" href="#">    0 Points    </button>
-            <button type="button" class="btn btn-info" href="#">    ½ Points    </button>
-            <button type="button" class="btn btn-info" href="#">    1 Points    </button>
-            <button type="button" class="btn btn-info" href="#">    2 Points    </button>
-            <button type="button" class="btn btn-info" href="#">    3 Points    </button>
-            <button type="button" class="btn btn-info" href="#">    5 Points    </button>
-            <button type="button" class="btn btn-info" href="#">    8 Points    </button>
-            <button type="button" class="btn btn-info" href="#">    13 Points   </button>
-            <button type="button" class="btn btn-info" href="#">    20 Points   </button>
-            <button type="button" class="btn btn-info" href="#">    40 Points   </button>
-            <button type="button" class="btn btn-info" href="#">    100 Points  </button>
-            <button type="button" class="btn btn-info" href="#">    😫 Points   </button>
+            <button type="button" class="btn btn-info" data-score="0">    0 Points    </button>
+            <button type="button" class="btn btn-info" data-score="½">    ½ Points    </button>
+            <button type="button" class="btn btn-info" data-score="1">    1 Points    </button>
+            <button type="button" class="btn btn-info" data-score="2">    2 Points    </button>
+            <button type="button" class="btn btn-info" data-score="3">    3 Points    </button>
+            <button type="button" class="btn btn-info" data-score="5">    5 Points    </button>
+            <button type="button" class="btn btn-info" data-score="8">    8 Points    </button>
+            <button type="button" class="btn btn-info" data-score="13">   13 Points   </button>
+            <button type="button" class="btn btn-info" data-score="20">   20 Points   </button>
+            <button type="button" class="btn btn-info" data-score="40">   40 Points   </button>
+            <button type="button" class="btn btn-info" data-score="100">  100 Points  </button>
+            <button type="button" class="btn btn-info" data-score="😫?">  😫 Points   </button>
         </div>
 
 
@@ -59,14 +59,19 @@
             </tr>
         </table>
 
-        <!--TODO: remove href="#" from above -->
+        <div id="Summary">
+            <strong>Average:</strong> <span id="Average"><span>?</span></span>
+        </div>
+
+        <br>
+
         <div id="DangerZone">
             <span id="Clear">
                 <button type="button" class="btn btn-danger">Clear</button>
             </span>
             <span id="Reset">
                 <button type="button" class="btn btn-danger">Reset</button>
-            </span}>
+            </span>
         </div>
 
         <br><br><br><br><br>
@@ -84,6 +89,7 @@
     <script src="vendor/popper.min.js"></script>
     <script src="vendor/bootstrap.min.js"></script>
     <script src="vendor/holder.min.js"></script>
+    <script src="vendor/underscore-min.js"></script>
     <script src="index.js"></script>
     <script>
       // Holder.addTheme('thumb', {

@@ -1,14 +1,27 @@
 $(function(){
 
+  var Buttons = $('#Buttons');
   var Question = $('#Question');
   var Name = $('#Name');
   var Voters = $('#Voters');
   var Clear = $('#Clear');
   var Reset = $('#Reset');
+  var Average = $('#Average');
+
   var rowTemplate = Voters.find('.template').clone(true);
 
   var MyName = 'Ryan'; // TODO
 
+
+  var buttonLabelToPoint = {};
+  var buttonPointToLabel = {};
+  Buttons.find('button').each(function(){
+    var t = $(this);
+    var label = t.html().trim();
+    var point = t.data('score');
+    buttonLabelToPoint[label] = point;
+    buttonPointToLabel[point] = label;
+  });
 
   var url = function(part) {
     var loc = window.location.origin != "null" ? window.location.origin : 'http://localhost:3000';
@@ -29,7 +42,33 @@ $(function(){
 
     return request(part, params).done(function(resp){
       renderState(resp);
+      renderAverage(resp);
     });
+  };
+
+  var computeAverage = function(state) {
+    var sum = 0;
+    var n = 0;
+    for(var k in (state.Voters || [])) {
+      if(_.isUndefined(state.Voters[k].Vote)) {
+        console.log('No Vote for ', state.Voters[k].Name);
+        return '?';
+      }
+      var points = parseInt(state.Voters[k].Vote);
+      if (_.isNaN(points)) {
+        console.log('points=' + state.Voters[k].Vote, );
+        return '?';
+      }
+      sum += points;
+      ++n;
+    }
+    if (n <= 0) { return '?'; }
+    return (sum/n).toFixed(2);
+  }
+
+  var renderAverage = function(state) {
+    var average = computeAverage(state);
+    Average.find('span').html(average);
   };
 
   var renderState = function(state) {
@@ -43,7 +82,7 @@ $(function(){
       var voteri = state.Voters[k];
       var row = rowTemplate.clone(true);
       row.find('.Name').html(voteri.Name);
-      row.find('.Vote').html(voteri.Vote);
+      row.find('.Vote').html(buttonPointToLabel[voteri.Vote]);
       cloned.append(row);
     }
 
@@ -51,6 +90,9 @@ $(function(){
     Voters.replaceWith(cloned);
     Voters = cloned;
   };
+
+
+  // hook things up
 
   setInterval(updateState, 1000);
 
@@ -64,7 +106,7 @@ $(function(){
   $('#Buttons button').each(function(){
     var self = $(this); // prolly too pedantic
     self.click(() => {
-      updateState('set', {Vote: self.html(), Name: MyName});
+      updateState('set', {Vote: buttonLabelToPoint[self.html().trim()], Name: MyName});
       return false;
     });
   });
