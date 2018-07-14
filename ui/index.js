@@ -1,4 +1,5 @@
 $(function(){
+
   var url = function(part) {
     return 'http://localhost:3000' + '/' + part + '.json';
   };
@@ -58,6 +59,11 @@ $(function(){
     MyName = $(this).val();
     updateState('set', {Name: MyName});
     return false;
-  })
+  });
+
+  Question.find('input').keyup(function(){
+    updateState('set', {Question: $(this).val()});
+    return false;
+  });
 
 });
