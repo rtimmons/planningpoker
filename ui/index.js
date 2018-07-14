@@ -24,6 +24,8 @@ $(function(){
 
   var rowTemplate = Voters.find('.template').clone(true);
 
+  var MyName = 'Ryan'; // TODO
+
   var renderState = function(state) {
     var cloned = Voters.clone(true);
     cloned.empty();
@@ -40,10 +42,22 @@ $(function(){
 
     Voters.replaceWith(cloned);
     Voters = cloned;
-
-    console.log(state);
   };
 
   setInterval(updateState, 1000);
+
+  $('#Buttons button').each(function(){
+    var self = $(this);
+    self.click(() => {
+      updateState('set', {Vote: self.html(), Name: MyName});
+      return false;
+    });
+  });
+
+  Name.find('input').change(function(){
+    MyName = $(this).val();
+    updateState('set', {Name: MyName});
+    return false;
+  })
 
 });
