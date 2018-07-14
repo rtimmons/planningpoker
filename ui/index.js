@@ -49,6 +49,11 @@ $(function(){
 
   setInterval(updateState, 1000);
 
+  Voters.on('click', 'a.kick', function(){
+    updateState('kick',{Name: $(this).parent().parent().parent().find('.Name').html().trim()});
+    return false;
+  });
+
   $('#Buttons button').each(function(){
     var self = $(this);
     self.click(() => {
