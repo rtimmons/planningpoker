@@ -149,8 +149,9 @@ $(function(){
   });
 
   Reset.click(function(){
-    updateState('reset');
-    window.location.reload();
+    updateState('reset').then(() => {
+      window.location.reload();
+    });
     return false;
   });
 
