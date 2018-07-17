@@ -7,6 +7,7 @@ $(function(){
   var Clear = $('#Clear');
   var Reset = $('#Reset');
   var Average = $('#Average');
+  var MaybeIceCream = $('#MaybeIceCream');
 
   var rowTemplate = Voters.find('.template').clone(true);
 
@@ -83,13 +84,16 @@ $(function(){
 
     var showVotes = forceShow || (average != 'NotDone');
 
+    var votes = [];
     for(var k in state.Voters) {
       var voteri = state.Voters[k];
+      votes.push(voteri.Vote);
 
       var row = rowTemplate.clone(true);
       row.find('.Name').html(voteri.Name);
 
       var label = buttonPointToLabel[voteri.Vote];
+
       if(!showVotes && (MyName !== voteri.Name)) {
         label = !_.isUndefined(voteri.Vote) ? '🙈' : '🤔';
       }
@@ -101,6 +105,14 @@ $(function(){
     // std::swap exists in jQuery
     Voters.replaceWith(cloned);
     Voters = cloned;
+
+    if (!showVotes || votes.size == 0) {
+      MaybeIceCream.html('');
+    } else if (_.every(votes, (v) => v === votes[0])) {
+      MaybeIceCream.html('🍦');
+    } else {
+      MaybeIceCream.html('😼');
+    }
   };
 
 
