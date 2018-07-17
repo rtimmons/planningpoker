@@ -90,7 +90,7 @@ $(function(){
       row.find('.Name').html(voteri.Name);
 
       var label = buttonPointToLabel[voteri.Vote];
-      if(!showVotes) {
+      if(!showVotes && (MyName !== voteri.Name)) {
         label = !_.isUndefined(voteri.Vote) ? '🙈' : '🤔';
       }
       row.find('.Vote').html(label);
@@ -118,6 +118,10 @@ $(function(){
   $('#Buttons button').each(function(){
     var self = $(this); // prolly too pedantic
     self.click(() => {
+      if (_.isUndefined(MyName) || MyName === '') {
+        Name.find('input').focus();
+        return false;
+      }
       updateState('set', {Vote: buttonLabelToPoint[self.html().trim()], Name: MyName});
       return false;
     });

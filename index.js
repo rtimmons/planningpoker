@@ -70,7 +70,7 @@ var setState = function(question, vname, vote) {
   voter = _.find(state.Voters, (v) => v.Name == vname);
   existing = ! _.isUndefined(voter);
 
-  if (!existing && _.isUndefined(vname)) {
+  if (!existing && (_.isUndefined(vname) || vname === '')) {
     throw `WTF with question=${question}, vname=${vname}, vote=${vote}`;
   }
 
