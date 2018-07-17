@@ -4,6 +4,11 @@ Planning Poker
 Deploying
 ---------
 
+**Create a Host**
+
+- Amazon Linux
+- `micro` size is fine
+
 **Setup**
 
 1. Change hostname in `Ansible/config.ini`.
