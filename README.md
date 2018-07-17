@@ -1,6 +1,19 @@
 Planning Poker
 ==============
 
+Developing & Testing Locally
+----------------------------
+
+
+```sh
+npm install
+npm run start
+```
+
+Open <http://localhost:3000>
+
+
+
 Deploying
 ---------
 

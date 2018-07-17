@@ -120,8 +120,8 @@ var clearHandler = function(req, res) {
   clear();
   return getStateHandler(req, res);
 };
-// these url routes suck
 
+// these url routes suck
 app.get('/state.json',  getStateHandler);
 app.get('/set.json',    setStateHandler);
 app.get('/kick.json',   kickHandler);
