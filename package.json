@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "stop": "pkill smhexprsrv"
+    "stop": "pkill poker"
   },
   "author": "",
   "license": "ISC",

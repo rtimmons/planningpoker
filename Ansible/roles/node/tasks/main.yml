@@ -1,0 +1,25 @@
+- name: install curl
+  become_user: root
+  become: yes
+  yum:
+    name: curl
+    state: latest
+
+- name: enable nodesource packages
+  become_user: root
+  become: yes
+  shell:
+    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+    touch /root/nodesource
+    chmod a+r /root/nodesource
+  args:
+    creates: /root/nodesource
+
+- name: install npm packages
+  become_user: root
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    -  nodejs
