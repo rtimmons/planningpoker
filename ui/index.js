@@ -1,3 +1,22 @@
+(function(win){
+    win.cookies = {
+        get: function(cname) {
+          var ca = decodeURIComponent(document.cookie || '').split(';');
+          for(var i = 0; i <ca.length; i++) {
+              var pair = ca[i].split('=');
+              if (pair[0].trim() == cname) { return pair[1].trim(); }
+          }
+          return "";
+        },
+        set: function(cname, cvalue) {
+          var d = new Date();
+          d.setTime(d.getTime() + (365*24*60*60*1000));
+          document.cookie = cname + "=" + cvalue.trim() + ";" + "expires="+ d.toUTCString(); + ";path=/";
+        },
+    };
+})(window);
+
+
 $(function(){
 
   var Buttons = $('#Buttons');
@@ -11,7 +30,7 @@ $(function(){
 
   var rowTemplate = Voters.find('.template').clone(true);
 
-  var MyName;
+  var MyName = window.cookies.get('Name');
 
   var buttonLabelToPoint = {};
   var buttonPointToLabel = {};
@@ -141,6 +160,7 @@ $(function(){
 
   var onNameChange = function(){
     MyName = $(this).val();
+    window.cookies.set('Name', MyName);
     updateState('set', {Name: MyName});
 
     return false;
@@ -176,7 +196,7 @@ $(function(){
     return false;
   });
 
-  Name.find('input').val('');
+  Name.find('input').val(MyName || '');
 
   Name.find('input').focus();
   Name.submit(() => false);
