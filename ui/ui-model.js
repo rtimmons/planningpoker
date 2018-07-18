@@ -32,6 +32,10 @@ class UI {
     this.buttonLabelToPoint = {};
     this.buttonPointToLabel = {};
 
+    this.init();
+  }
+
+  init() {
     var self = this;
     this.Buttons.find('button').each(function(){
       var t = $(this);
@@ -40,6 +44,67 @@ class UI {
       self.buttonLabelToPoint[label] = point;
       self.buttonPointToLabel[point] = label;
     });
+
+    // need to use this versus .each cuz we create new a.kicks via .clone()
+    this.Voters.on('click', 'a.kick', function(){
+      // ohgod it's hard to be a parent these days
+      self.updateState('kick',{Name: $(this).parent().parent().parent().find('.Name').html().trim()});
+      return false;
+    });
+
+    $('#Buttons button').each(function(){
+      $(this).click(() => {
+        if (_.isUndefined(self.MyName) || self.MyName === '') {
+          self.Name.find('input').focus();
+          return false;
+        }
+        self.updateState('set', {Vote: self.buttonLabelToPoint[$(this).html().trim()], Name: self.MyName});
+        return false;
+      });
+    });
+
+    var onNameChange = function(){
+      this.MyName = $(this).val();
+      window.cookies.set('Name', this.MyName);
+      this.updateState('set', {Name: this.MyName});
+
+      return false;
+    };
+
+    // 😹
+    this.Name.find('input')
+      .blur(onNameChange)
+      .submit(onNameChange)
+      .keyup(function(e){
+        var code = e.which;
+        if (code == 13) {
+          return $(this).blur();
+        }
+      });
+
+    // DRY mucho, vos?
+
+    this.Question.find('input').keyup(function(){
+      this.updateState('set', {Question: $(this).val()});
+      return false;
+    });
+
+    this.Reset.click(function(){
+      self.updateState('reset').then(() => {
+        window.location.reload();
+      });
+      return false;
+    });
+
+    this.Clear.click(function(){
+      this.updateState('clear');
+      return false;
+    });
+
+    this.Name.find('input').val(this.MyName || '');
+
+    this.Name.find('input').focus();
+    this.Name.submit(() => false);
   }
 
   renderAverage(average) {

@@ -19,13 +19,9 @@
 
 $(function(){
 
-
-
-
   // TODO: #Container wrapper
   var ui = new UI({
     container: $('#Container'),
-    request: request,
   });
 
   // hook things up
