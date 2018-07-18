@@ -2,6 +2,13 @@ const Promise = require('promise');
 const _ = require('underscore');
 const deepcopy = require('deepcopy');
 
+/*
+Business-logic for back-end.
+This is about at its limit for complexity without some refactoring
+and/or automated testing!
+*/
+
+
 var timestamp = function() { return new Date().getTime(); };
 
 const startState = {
