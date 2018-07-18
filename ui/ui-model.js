@@ -53,7 +53,7 @@ class State {
     }
     return allDone && allNumbers ?
        (sum/(n||1)).toFixed(2)
-    : (!allDone ? 'NotDone' : '😱');
+    : (!allDone ? '🤔' : '😱');
   }
 }
 
@@ -188,9 +188,7 @@ class UI {
   }
 
   _renderAverage(state) {
-    var average = state.computeAverage();
-    average = average == 'NotDone' ? '🤔' : average;
-    this.Average.find('span').html(average);
+    this.Average.find('span').html(state.computeAverage());
   }
 
   _renderQuestion(state) {
@@ -222,7 +220,7 @@ class UI {
 
   _renderVoteTable(state) {
     var voteTable = this._generateVoteTable(state);
-    
+
     this.Voters.replaceWith(voteTable);
     this.Voters = voteTable;
   }
@@ -237,9 +235,7 @@ class UI {
   }
 
   _renderIceCream(state) {
-    var allSame = state.allSame()
-    var label = state.anyPendingVoters(state) ? '' : (allSame ? '🍦' : '😼')
-    this.MaybeIceCream.html(label);
+    this.MaybeIceCream.html(state.anyPendingVoters(state) ? '' : (state.allSame() ? '🍦' : '😼'));
   }
 
   updateState(part, params) {
