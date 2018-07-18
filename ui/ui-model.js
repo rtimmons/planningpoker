@@ -35,14 +35,17 @@ class UI {
     this.init();
   }
 
+  _registerVoteButton($b) {
+    var label = $b.html().trim();
+    var point = $b.data('score');
+    this.buttonLabelToPoint[label] = point;
+    this.buttonPointToLabel[point] = label;
+  }
+
   init() {
     var self = this;
     this.Buttons.find('button').each(function(){
-      var t = $(this);
-      var label = t.html().trim();
-      var point = t.data('score');
-      self.buttonLabelToPoint[label] = point;
-      self.buttonPointToLabel[point] = label;
+      self._registerVoteButton($(this));
     });
 
     // need to use this versus .each cuz we create new a.kicks via .clone()
