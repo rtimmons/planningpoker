@@ -20,6 +20,10 @@ class State {
     this._allSame = this.votes.length == 0 || _.all(this.votes, v => v === this.votes[0]);
   }
   
+  question() {
+    return this.serverState.Question;
+  }
+  
   anyPendingVoters() {
     return this._anyPendingVoters;
   }
@@ -73,14 +77,14 @@ class UI {
     this.buttonLabelToPoint = {};
     this.buttonPointToLabel = {};
 
-    this.init();
+    this._init();
   }
 
   _registerVoteButton($b) {
     var label = $b.html().trim();
-    var point = $b.data('score');
-    this.buttonLabelToPoint[label] = point;
-    this.buttonPointToLabel[point] = label;
+    var score = $b.data('score');
+    this.buttonLabelToPoint[label] = score;
+    this.buttonPointToLabel[score] = label;
   }
 
   _handleKickClick($b) {
@@ -130,7 +134,7 @@ class UI {
     return false;
   }
 
-  init() {
+  _initButtons() {
     var self = this;
     this.Buttons.find('button')
       .each(function(){
@@ -140,13 +144,10 @@ class UI {
         return self._handleVoteClick($(this));
       });
 
+
     // need to use this versus .each cuz we create new a.kicks via .clone()
     this.Voters.on('click', 'a.kick', function(){
       self._handleKickClick($(this));
-    });
-
-    this.Question.find('input').keyup(function(){
-      return self._handleQuestionChange($(this).val());
     });
 
     this.Reset.click(function(){
@@ -155,6 +156,13 @@ class UI {
 
     this.Clear.click(function(){
       return self._handleClearClick();
+    });
+  }
+
+  _initInputs() {
+    var self = this;
+    this.Question.find('input').keyup(function(){
+      return self._handleQuestionChange($(this).val());
     });
 
     var onNameChange = function(){
@@ -165,7 +173,7 @@ class UI {
       .blur(onNameChange)
       .submit(onNameChange)
       .keyup(function(e){
-        if (e.which == 13) {
+        if (e.which == 13) { // enter
           return $(this).blur();
         }
       });
@@ -174,15 +182,20 @@ class UI {
     this.Name.find('input').focus();
   }
 
+  _init() {
+    this._initInputs();
+    this._initButtons();
+  }
+
   _renderAverage(state) {
     var average = state.computeAverage();
     average = average == 'NotDone' ? '🤔' : average;
     this.Average.find('span').html(average);
   }
 
-  _renderQuestion(changedTo) {
+  _renderQuestion(state) {
     // update the question but only if not focused(==has cursor)
-    this.Question.find('input:not(:focus)').val(changedTo);
+    this.Question.find('input:not(:focus)').val(state.question());
   }
 
   _generateVoteTable(state) {
@@ -214,7 +227,7 @@ class UI {
     this.Voters = voteTable;
   }
 
-  renderState(state) {
+  _renderState(state) {
     state = new State(state);
 
     this._renderQuestion(state);
@@ -231,9 +244,8 @@ class UI {
 
   updateState(part, params) {
     return request(part || 'state', params || {}).done(resp => {
-      this.renderState(resp);
+      this._renderState(resp);
     });
   }
-
 
 }
