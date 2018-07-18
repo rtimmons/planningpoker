@@ -1,10 +1,52 @@
 ;process.title = "poker"
 
+// imports
+
 var express = require('express');
 var request = require('request');
 var cors = require('cors')
-var _ = require('underscore');
-var deepcopy = require('deepcopy');
+var bodyParser = require('body-parser');
+
+var model = require('./model.js');
+
+// setup
+
+var app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cors());
+app.use(express.static('ui'))
+
+// Handlers
+
+var getStateHandler = function(req, res){
+  res.header('Content-Type', 'application/json');
+  res.send(model.getStateJson());
+};
+
+var setStateHandler = function(req, res) {
+  model.setState(req.query.Question, req.query.Name, req.query.Vote);
+  return getStateHandler(req,res);
+};
+
+var kickHandler = function(req, res) {
+  model.kick(req.query.Name);
+  return getStateHandler(req, res);
+};
+
+var resetHandler = function(req, res) {
+  model.reset();
+  return getStateHandler(req, res);
+};
+
+var clearHandler = function(req, res) {
+  model.clear();
+  return getStateHandler(req, res);
+};
+
+// Routing
 
 /*
 current state:
@@ -30,97 +72,6 @@ kick:
 http://localhost:3000/kick.json?Name=Abdul
 */
 
-var app = express();
-
-// https://scotch.io/tutorials/use-expressjs-to-get-url-and-post-parameters
-var bodyParser = require('body-parser');
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-
-app.use(cors());
-
-app.use(express.static('ui'))
-
-timestamp = function() { return new Date().getTime(); };
-
-const startState = {
-  Question: "So, uh, how's that Python 3 coming along?",
-  Voters: [
-    // 英津子 is "Etsuko" 👘
-    {"Name": "英津子",   "Vote": "8", "LastVoteTS": timestamp()},
-    {"Name": "Deshawn", "Vote": "3", "LastVoteTS": timestamp()},
-    {"Name": "Maqbool", "Vote": "😫?", "LastVoteTS": timestamp()}
-  ]
-};
-var state = deepcopy(startState);
-
-// app.get('/b/:to', function(req, res){
-//   var url = redirs[req.params.to];
-//   req.pipe(request(url)).pipe(res);
-// });
-
-var setState = function(question, vname, vote) {
-  var existing, voter;
-
-  // can set question even if other errors
-  state.Question = question || state.Question;
-
-  if (!(vname || !_.isUndefined(vote))) { return; }
-
-  voter = _.find(state.Voters, (v) => v.Name == vname);
-  existing = ! _.isUndefined(voter);
-
-  if (!existing && (_.isUndefined(vname) || vname === '')) {
-    throw `WTF with question=${question}, vname=${vname}, vote=${vote}`;
-  }
-
-  voter = voter || {};
-
-  voter.Name = vname || voter.Name;
-  voter.Vote = vote  || voter.Vote;
-  voter.LastVoteTS = timestamp();
-
-  if (!existing) {
-    state.Voters.push(voter);
-  }
-};
-
-var kick = function(vname) {
-  state.Voters = _.reject(state.Voters, (v) => v.Name == vname);
-}
-
-var reset = function() {
-  state = deepcopy(startState);
-}
-
-var clear = function() {
-  _.each(state.Voters, v => {
-    delete v.Vote;
-  });
-  // delete state.Question;
-}
-
-var getStateHandler = function(req, res){
-  res.header('Content-Type', 'application/json');
-  res.send(JSON.stringify(state));
-};
-var setStateHandler = function(req, res) {
-  setState(req.query.Question, req.query.Name, req.query.Vote);
-  return getStateHandler(req,res);
-};
-var kickHandler = function(req, res) {
-  kick(req.query.Name);
-  return getStateHandler(req, res);
-}
-var resetHandler = function(req, res) {
-  reset();
-  return getStateHandler(req, res);
-}
-var clearHandler = function(req, res) {
-  clear();
-  return getStateHandler(req, res);
-};
-
 // these url routes suck
 app.get('/state.json',  getStateHandler);
 app.get('/set.json',    setStateHandler);
@@ -128,6 +79,7 @@ app.get('/kick.json',   kickHandler);
 app.get('/reset.json',  resetHandler);
 app.get('/clear.json',  clearHandler);
 
-app.use('/ui', express.static('ui'))
+
+// 💪
 
 app.listen(3000, () => console.log('Listening on port 3000!'));
