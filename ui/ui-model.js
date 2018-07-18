@@ -185,7 +185,7 @@ class UI {
     this.Question.find('input:not(:focus)').val(changedTo);
   }
 
-  _generateVoteTable(state, forceShow) {
+  _generateVoteTable(state) {
     var cloned = this.Voters.clone(true);
     cloned.empty(); // kill the obsolete rows
 
@@ -193,7 +193,7 @@ class UI {
       var row = this.rowTemplate.clone(true);
       row.find('.Name').html(voteri.Name);
 
-      var showVotes = forceShow || !state.anyPendingVoters();
+      var showVotes = !state.anyPendingVoters();
 
       var label = this.buttonPointToLabel[voteri.Vote];
       if(!showVotes && (this.MyName !== voteri.Name)) {
@@ -207,16 +207,19 @@ class UI {
     return cloned;
   }
 
-  renderState(state, forceShow) {
-    state = new State(state);
-
-    this._renderQuestion(state.Question);
-    this._renderAverage(state);
-
-    var voteTable = this._generateVoteTable(state, forceShow);
+  _renderVoteTable(state) {
+    var voteTable = this._generateVoteTable(state);
+    
     this.Voters.replaceWith(voteTable);
     this.Voters = voteTable;
+  }
 
+  renderState(state) {
+    state = new State(state);
+
+    this._renderQuestion(state);
+    this._renderAverage(state);
+    this._renderVoteTable(state);
     this._renderIceCream(state);
   }
 
