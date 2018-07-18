@@ -29,6 +29,28 @@ class State {
   eachVoter(f) {
     return _.collect(this.serverState.Voters || [], v => f(v));
   }
+
+  computeAverage(state) {
+    var sum = 0.0;
+    var n = 0.0;
+
+    var allDone = true;
+    var allNumbers = true;
+    for(var k in (this.serverState.Voters || [])) {
+      if (_.isUndefined(this.serverState.Voters[k].Vote)) {
+        allDone = false;
+      }
+      var points = parseInt(this.serverState.Voters[k].Vote);
+      if (_.isNaN(points)) {
+        allNumbers = false;
+      }
+      sum += points;
+      ++n;
+    }
+    return allDone && allNumbers ?
+       (sum/(n||1)).toFixed(2)
+    : (!allDone ? 'NotDone' : '😱');
+  }
 }
 
 class UI {
@@ -152,7 +174,8 @@ class UI {
     this.Name.find('input').focus();
   }
 
-  renderAverage(average) {
+  _renderAverage(state) {
+    var average = state.computeAverage();
     average = average == 'NotDone' ? '🤔' : average;
     this.Average.find('span').html(average);
   }
@@ -188,9 +211,7 @@ class UI {
     state = new State(state);
 
     this._renderQuestion(state.Question);
-
-    var average = this.computeAverage(state);
-    this.renderAverage(average);
+    this._renderAverage(state);
 
     var voteTable = this._generateVoteTable(state, forceShow);
     this.Voters.replaceWith(voteTable);
@@ -206,35 +227,9 @@ class UI {
   }
 
   updateState(part, params) {
-    part   = part   || 'state';
-    params = params || {};
-
-    var self = this;
-    return request(part, params).done(resp => {
-      self.renderState(resp);
+    return request(part || 'state', params || {}).done(resp => {
+      this.renderState(resp);
     });
-  }
-
-  computeAverage(state) {
-    var sum = 0.0;
-    var n = 0.0;
-
-    var allDone = true;
-    var allNumbers = true;
-    for(var k in (state.Voters || [])) {
-      if (_.isUndefined(state.Voters[k].Vote)) {
-        allDone = false;
-      }
-      var points = parseInt(state.Voters[k].Vote);
-      if (_.isNaN(points)) {
-        allNumbers = false;
-      }
-      sum += points;
-      ++n;
-    }
-    return allDone && allNumbers ?
-       (sum/(n||1)).toFixed(2)
-    : (!allDone ? 'NotDone' : '😱');
   }
 
 
