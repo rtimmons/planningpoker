@@ -42,39 +42,76 @@ class UI {
     this.buttonPointToLabel[point] = label;
   }
 
+  _handleKickClick($b) {
+    // ohgod it's hard to be a parent these days
+    this.updateState('kick',{Name: $b.parent().parent().parent().find('.Name').html().trim()});
+    return false;
+  }
+
+  _handleVoteClick($b) {
+    if (_.isUndefined(this.MyName) || this.MyName === '') {
+      this.Name.find('input').focus();
+      return false;
+    }
+    this.updateState('set', {Vote: this.buttonLabelToPoint[$b.html().trim()], Name: this.MyName});
+    return false;
+  }
+
+  _handleNameChange(changedTo) {
+    this.MyName = changedTo;
+    window.cookies.set('Name', this.MyName);
+    this.updateState('set', {Name: this.MyName});
+    return false;
+  }
+
+  _handleQuestionChange(changedTo) {
+    this.updateState('set', {Question: $(this).val()});
+    return false;
+  }
+
+  _handleResetClick() {
+    this.updateState('reset').then(() => {
+      window.location.reload();
+    });
+    return false;
+  }
+
+  _handleClearClick() {
+    this.updateState('clear');
+    return false;
+  }
+
   init() {
     var self = this;
-    this.Buttons.find('button').each(function(){
-      self._registerVoteButton($(this));
-    });
+    this.Buttons.find('button')
+      .each(function(){
+        return self._registerVoteButton($(this));
+      })
+      .click(function() {
+        return self._handleVoteClick($(this));
+      });
 
     // need to use this versus .each cuz we create new a.kicks via .clone()
     this.Voters.on('click', 'a.kick', function(){
-      // ohgod it's hard to be a parent these days
-      self.updateState('kick',{Name: $(this).parent().parent().parent().find('.Name').html().trim()});
-      return false;
+      self._handleKickClick($(this));
     });
 
-    $('#Buttons button').each(function(){
-      $(this).click(() => {
-        if (_.isUndefined(self.MyName) || self.MyName === '') {
-          self.Name.find('input').focus();
-          return false;
-        }
-        self.updateState('set', {Vote: self.buttonLabelToPoint[$(this).html().trim()], Name: self.MyName});
-        return false;
-      });
+    this.Question.find('input').keyup(function(){
+      return self._handleQuestionChange($(this).val());
+    });
+
+    this.Reset.click(function(){
+      return self._handleResetClick()
+    });
+
+    this.Clear.click(function(){
+      return self._handleClearClick();
     });
 
     var onNameChange = function(){
-      this.MyName = $(this).val();
-      window.cookies.set('Name', this.MyName);
-      this.updateState('set', {Name: this.MyName});
-
-      return false;
+      return self._handleNameChange($(this).val());
     };
 
-    // 😹
     this.Name.find('input')
       .blur(onNameChange)
       .submit(onNameChange)
@@ -85,29 +122,8 @@ class UI {
         }
       });
 
-    // DRY mucho, vos?
-
-    this.Question.find('input').keyup(function(){
-      this.updateState('set', {Question: $(this).val()});
-      return false;
-    });
-
-    this.Reset.click(function(){
-      self.updateState('reset').then(() => {
-        window.location.reload();
-      });
-      return false;
-    });
-
-    this.Clear.click(function(){
-      this.updateState('clear');
-      return false;
-    });
-
     this.Name.find('input').val(this.MyName || '');
-
     this.Name.find('input').focus();
-    this.Name.submit(() => false);
   }
 
   renderAverage(average) {
