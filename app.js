@@ -50,30 +50,28 @@ const header = (req, res) => {
   return Promise.resolve();
 };
 
-app.get('/state.json', function(req, res){
+function onModel(req, res, f, args) {
   return header(req, res)
-    .then(model.getStateJson)
+    .then(() => f.apply(model, args || []))
     .then(s => res.send(s));
+}
+
+app.get('/state.json', function(req, res){
+  return onModel(req, res, model.getStateJson)
 });
 app.get('/set.json', function(req, res) {
-  return header(req, res)
-    .then(() => model.setState(req.query.Question, req.query.Name, req.query.Vote))
-    .then(s => res.send(s));
+  return onModel(req, res, model.setState, [
+    req.query.Question, req.query.Name, req.query.Vote
+  ]);
 });
 app.get('/kick.json', function(req, res) {
-  return header(req, res)
-    .then(() => model.kick(req.query.Name))
-    .then(s => res.send(s));
+  return onModel(req, res, model.kick, [req.query.Name]);
 });
 app.get('/reset.json', function(req, res) {
-  return header(req, res)
-    .then(model.reset)
-    .then(s => res.send(s));
+  return onModel(req, res, model.reset);
 });
 app.get('/clear.json', function(req, res) {
-  return header(req, res)
-    .then(model.clear)
-    .then(s => res.send(s));
+  return onModel(req, res, model.clear);
 });
 
 
