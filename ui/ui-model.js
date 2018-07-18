@@ -12,6 +12,25 @@ var request = function(part, params) {
   });
 };
 
+class State {
+  constructor(serverState) {
+    this.serverState = serverState;
+    this.votes = _.collect(this.serverState.Voters || [], v => v.Vote);
+    this._anyPendingVoters = this.votes.length == 0 || _.any(this.votes, v => _.isUndefined(v) || v === '');
+    this._allSame = this.votes.length == 0 || _.all(this.votes, v => v === this.votes[0]);
+  }
+  
+  anyPendingVoters() {
+    return this._anyPendingVoters;
+  }
+  allSame() {
+    return this._allSame;
+  }
+  eachVoter(f) {
+    return _.collect(this.serverState.Voters || [], v => f(v));
+  }
+}
+
 class UI {
   constructor(params) {
     this.Container = params.container;
@@ -147,13 +166,11 @@ class UI {
     var cloned = this.Voters.clone(true);
     cloned.empty(); // kill the obsolete rows
 
-    for(var k in state.Voters) {
-      var voteri = state.Voters[k];
-
+    state.eachVoter(voteri => {
       var row = this.rowTemplate.clone(true);
       row.find('.Name').html(voteri.Name);
 
-      var showVotes = forceShow || !this._anyPendingVoters(state);
+      var showVotes = forceShow || !state.anyPendingVoters();
 
       var label = this.buttonPointToLabel[voteri.Vote];
       if(!showVotes && (this.MyName !== voteri.Name)) {
@@ -162,12 +179,14 @@ class UI {
       row.find('.Vote').html(label);
 
       cloned.append(row);
-    }
+    });
 
     return cloned;
   }
 
   renderState(state, forceShow) {
+    state = new State(state);
+
     this._renderQuestion(state.Question);
 
     var average = this.computeAverage(state);
@@ -180,15 +199,9 @@ class UI {
     this._renderIceCream(state);
   }
 
-  _anyPendingVoters(state) {
-    var votes = _.collect(state.Voters || [], v => v.Vote);
-    return votes.length == 0 || _.any(votes, v => _.isUndefined(v) || v === '');
-  }
-
   _renderIceCream(state) {
-    var votes = _.collect(state.Voters || [], v => v.Vote);
-    var allSame = _.every(votes, v => v === votes[0]);
-    var label = this._anyPendingVoters(state) ? '' : (allSame ? '🍦' : '😼')
+    var allSame = state.allSame()
+    var label = state.anyPendingVoters(state) ? '' : (allSame ? '🍦' : '😼')
     this.MaybeIceCream.html(label);
   }
 
