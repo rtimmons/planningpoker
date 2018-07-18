@@ -53,19 +53,27 @@ class UI {
       this.Name.find('input').focus();
       return false;
     }
-    this.updateState('set', {Vote: this.buttonLabelToPoint[$b.html().trim()], Name: this.MyName});
+    this.updateState('set', {
+      Vote: this.buttonLabelToPoint[$b.html().trim()],
+      Name: this.MyName
+    });
     return false;
   }
 
   _handleNameChange(changedTo) {
     this.MyName = changedTo;
     window.cookies.set('Name', this.MyName);
-    this.updateState('set', {Name: this.MyName});
+
+    this.updateState('set', {
+      Name: this.MyName
+    });
     return false;
   }
 
   _handleQuestionChange(changedTo) {
-    this.updateState('set', {Question: $(this).val()});
+    this.updateState('set', {
+      Question: changedTo
+    });
     return false;
   }
 
@@ -116,8 +124,7 @@ class UI {
       .blur(onNameChange)
       .submit(onNameChange)
       .keyup(function(e){
-        var code = e.which;
-        if (code == 13) {
+        if (e.which == 13) {
           return $(this).blur();
         }
       });
@@ -131,28 +138,24 @@ class UI {
     this.Average.find('span').html(average);
   }
 
-  renderState(state, forceShow) {
+  _renderQuestion(changedTo) {
+    // update the question but only if not focused(==has cursor)
+    this.Question.find('input:not(:focus)').val(changedTo);
+  }
+
+  _generateVoteTable(state, forceShow) {
     var cloned = this.Voters.clone(true);
     cloned.empty(); // kill the obsolete rows
 
-    // update the question but only if not focused(==has cursor)
-    this.Question.find('input:not(:focus)').val(state.Question);
-
-    var average = this.computeAverage(state);
-    this.renderAverage(average);
-
-    var showVotes = forceShow || (average != 'NotDone');
-
-    var votes = [];
     for(var k in state.Voters) {
       var voteri = state.Voters[k];
-      votes.push(voteri.Vote);
 
       var row = this.rowTemplate.clone(true);
       row.find('.Name').html(voteri.Name);
 
-      var label = this.buttonPointToLabel[voteri.Vote];
+      var showVotes = forceShow || !this._anyPendingVoters(state);
 
+      var label = this.buttonPointToLabel[voteri.Vote];
       if(!showVotes && (this.MyName !== voteri.Name)) {
         label = !_.isUndefined(voteri.Vote) ? '🙈' : '🤔';
       }
@@ -161,17 +164,32 @@ class UI {
       cloned.append(row);
     }
 
-    // std::swap exists in jQuery
-    this.Voters.replaceWith(cloned);
-    this.Voters = cloned;
+    return cloned;
+  }
 
-    if (!showVotes || votes.size == 0) {
-      this.MaybeIceCream.html('');
-    } else if (_.every(votes, (v) => v === votes[0])) {
-      this.MaybeIceCream.html('🍦');
-    } else {
-      this.MaybeIceCream.html('😼');
-    }
+  renderState(state, forceShow) {
+    this._renderQuestion(state.Question);
+
+    var average = this.computeAverage(state);
+    this.renderAverage(average);
+
+    var voteTable = this._generateVoteTable(state, forceShow);
+    this.Voters.replaceWith(voteTable);
+    this.Voters = voteTable;
+
+    this._renderIceCream(state);
+  }
+
+  _anyPendingVoters(state) {
+    var votes = _.collect(state.Voters || [], v => v.Vote);
+    return votes.length == 0 || _.any(votes, v => _.isUndefined(v) || v === '');
+  }
+
+  _renderIceCream(state) {
+    var votes = _.collect(state.Voters || [], v => v.Vote);
+    var allSame = _.every(votes, v => v === votes[0]);
+    var label = this._anyPendingVoters(state) ? '' : (allSame ? '🍦' : '😼')
+    this.MaybeIceCream.html(label);
   }
 
   updateState(part, params) {
