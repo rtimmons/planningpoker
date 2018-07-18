@@ -43,7 +43,7 @@ class State {
         Name: v.Name,
         Label: showVotes || v.Name === myName ? 
           buttonPointToLabel[v.Vote] :
-          (_.isUndefined(v) ? '🤔': '🙈')
+          (_.isUndefined(v.Vote) ? '🤔': '🙈')
       }
     });
   }
