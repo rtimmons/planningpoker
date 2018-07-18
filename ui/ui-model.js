@@ -27,14 +27,33 @@ class State {
   anyPendingVoters() {
     return this._anyPendingVoters;
   }
+
   allSame() {
     return this._allSame;
   }
+
   eachVoter(f) {
     return _.collect(this.serverState.Voters || [], v => f(v));
   }
 
-  computeAverage(state) {
+  renderableVotes(myName, buttonPointToLabel) {
+    var showVotes = !this.anyPendingVoters();
+    return this.eachVoter(v => {
+      return {
+        Name: v.Name,
+        Label: showVotes || v.Name === myName ? 
+          buttonPointToLabel[v.Vote] :
+          (_.isUndefined(v) ? '🤔': '🙈')
+      }
+    });
+  }
+
+  reward() {
+    return this.anyPendingVoters() ? '🤔'
+          : (this.allSame() ? '🍦' : '😼');
+  }
+
+  computeAverage() {
     var sum = 0.0;
     var n = 0.0;
 
@@ -80,12 +99,78 @@ class UI {
     this._init();
   }
 
+  // public
+
+  updateState(part, params) {
+    return request(part || 'state', params || {}).done(resp => {
+      this._renderState(resp);
+    });
+  }
+
+  // helpers
+
   _registerVoteButton($b) {
     var label = $b.html().trim();
     var score = $b.data('score');
     this.buttonLabelToPoint[label] = score;
     this.buttonPointToLabel[score] = label;
   }
+
+  // Inits
+
+  _init() {
+    this._initInputs();
+    this._initButtons();
+  }
+
+  _initButtons() {
+    var self = this;
+    this.Buttons.find('button')
+      .each(function(){
+        return self._registerVoteButton($(this));
+      })
+      .click(function() {
+        return self._handleVoteClick($(this));
+      });
+
+    // need to use this versus .each cuz we create new a.kicks via .clone()
+    this.Voters.on('click', 'a.kick', function(){
+      self._handleKickClick($(this));
+    });
+
+    this.Reset.click(function(){
+      return self._handleResetClick()
+    });
+
+    this.Clear.click(function(){
+      return self._handleClearClick();
+    });
+  }
+
+  _initInputs() {
+    var self = this;
+    this.Question.find('input').keyup(function(){
+      return self._handleQuestionChange($(this).val());
+    });
+
+    var onNameChange = function(){
+      return self._handleNameChange($(this).val());
+    };
+
+    this.Name.find('input')
+      .blur(onNameChange)
+      .submit(onNameChange)
+      .keyup(function(e){
+        if (e.which == 13) { // enter
+          return $(this).blur();
+        }
+      });
+
+    this.Name.find('input').val(this.MyName || '');
+    this.Name.find('input').focus();
+  }
+
+  // Handlers (bound in _init methods)
 
   _handleKickClick($b) {
     // ohgod it's hard to be a parent these days
@@ -134,61 +219,23 @@ class UI {
     return false;
   }
 
-  _initButtons() {
-    var self = this;
-    this.Buttons.find('button')
-      .each(function(){
-        return self._registerVoteButton($(this));
-      })
-      .click(function() {
-        return self._handleVoteClick($(this));
-      });
+  // renders
 
-
-    // need to use this versus .each cuz we create new a.kicks via .clone()
-    this.Voters.on('click', 'a.kick', function(){
-      self._handleKickClick($(this));
-    });
-
-    this.Reset.click(function(){
-      return self._handleResetClick()
-    });
-
-    this.Clear.click(function(){
-      return self._handleClearClick();
-    });
-  }
-
-  _initInputs() {
-    var self = this;
-    this.Question.find('input').keyup(function(){
-      return self._handleQuestionChange($(this).val());
-    });
-
-    var onNameChange = function(){
-      return self._handleNameChange($(this).val());
-    };
-
-    this.Name.find('input')
-      .blur(onNameChange)
-      .submit(onNameChange)
-      .keyup(function(e){
-        if (e.which == 13) { // enter
-          return $(this).blur();
-        }
-      });
-
-    this.Name.find('input').val(this.MyName || '');
-    this.Name.find('input').focus();
-  }
-
-  _init() {
-    this._initInputs();
-    this._initButtons();
+  // called by updateState (which is periodically run)
+  _renderState(state) {
+    state = new State(state);
+    this._renderQuestion(state);
+    this._renderAverage(state);
+    this._renderVoteTable(state);
+    this._renderIceCream(state);
   }
 
   _renderAverage(state) {
     this.Average.find('span').html(state.computeAverage());
+  }
+
+  _renderIceCream(state) {
+    this.MaybeIceCream.html(state.reward());
   }
 
   _renderQuestion(state) {
@@ -196,52 +243,21 @@ class UI {
     this.Question.find('input:not(:focus)').val(state.question());
   }
 
-  _generateVoteTable(state) {
-    var cloned = this.Voters.clone(true);
-    cloned.empty(); // kill the obsolete rows
-
-    state.eachVoter(voteri => {
-      var row = this.rowTemplate.clone(true);
-      row.find('.Name').html(voteri.Name);
-
-      var showVotes = !state.anyPendingVoters();
-
-      var label = this.buttonPointToLabel[voteri.Vote];
-      if(!showVotes && (this.MyName !== voteri.Name)) {
-        label = !_.isUndefined(voteri.Vote) ? '🙈' : '🤔';
-      }
-      row.find('.Vote').html(label);
-
-      cloned.append(row);
-    });
-
-    return cloned;
-  }
-
   _renderVoteTable(state) {
     var voteTable = this._generateVoteTable(state);
-
     this.Voters.replaceWith(voteTable);
     this.Voters = voteTable;
   }
 
-  _renderState(state) {
-    state = new State(state);
-
-    this._renderQuestion(state);
-    this._renderAverage(state);
-    this._renderVoteTable(state);
-    this._renderIceCream(state);
-  }
-
-  _renderIceCream(state) {
-    this.MaybeIceCream.html(state.anyPendingVoters(state) ? '' : (state.allSame() ? '🍦' : '😼'));
-  }
-
-  updateState(part, params) {
-    return request(part || 'state', params || {}).done(resp => {
-      this._renderState(resp);
+  _generateVoteTable(state) {
+    var cloned = this.Voters.clone(true).empty();
+    _.each(state.renderableVotes(this.MyName, this.buttonPointToLabel),voteri => {
+      cloned.append(this.rowTemplate.clone(true)
+        .find('.Name').html(voteri.Name).end()
+        .find('.Vote').html(voteri.Label).end()
+      );
     });
+    return cloned;
   }
 
 }
