@@ -23,7 +23,7 @@ app.use(express.static('ui'))
 
 var getStateHandler = function(req, res){
   res.header('Content-Type', 'application/json');
-  res.send(model.getStateJson());
+  model.getStateJson().then(j => res.send(j));
 };
 
 var setStateHandler = function(req, res) {

@@ -1,5 +1,6 @@
+const Promise = require('promise');
 const _ = require('underscore');
-const  deepcopy = require('deepcopy');
+const deepcopy = require('deepcopy');
 
 var timestamp = function() { return new Date().getTime(); };
 
@@ -16,7 +17,7 @@ var state = deepcopy(startState);
 
 
 var getStateJson = function() {
-  return JSON.stringify(state);
+  return Promise.resolve(JSON.stringify(state));
 };
 
 var setState = function(question, vname, vote) {

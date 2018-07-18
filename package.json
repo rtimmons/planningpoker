@@ -15,6 +15,7 @@
     "deepcopy": "^1.0.0",
     "express": "^4.16.3",
     "node-cache": "^4.2.0",
+    "promise": "^8.0.1",
     "request": "^2.87.0",
     "underscore": "^1.9.1"
   }
