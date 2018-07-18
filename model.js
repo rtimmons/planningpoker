@@ -44,21 +44,28 @@ var setState = function(question, vname, vote) {
   if (!existing) {
     state.Voters.push(voter);
   }
+
+  return getStateJson();
 };
 
 var kick = function(vname) {
   state.Voters = _.reject(state.Voters, (v) => v.Name == vname);
+
+  return getStateJson();
 }
 
 var reset = function() {
   state = deepcopy(startState);
+
+  return getStateJson();
 }
 
 var clear = function() {
   _.each(state.Voters, v => {
     delete v.Vote;
   });
-  // delete state.Question;
+
+  return getStateJson();
 };
 
 module.exports = {

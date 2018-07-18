@@ -21,29 +21,39 @@ app.use(express.static('ui'))
 
 // Handlers
 
+const header = (req, res) => {
+  res.header('Content-Type', 'application/json')
+  return Promise.resolve();
+};
+
 var getStateHandler = function(req, res){
-  res.header('Content-Type', 'application/json');
-  model.getStateJson().then(j => res.send(j));
+  return header(req, res)
+    .then(model.getStateJson)
+    .then(s => res.send(s));
 };
 
 var setStateHandler = function(req, res) {
-  model.setState(req.query.Question, req.query.Name, req.query.Vote);
-  return getStateHandler(req,res);
+  return header(req, res)
+    .then(() => model.setState(req.query.Question, req.query.Name, req.query.Vote))
+    .then(s => res.send(s));
 };
 
 var kickHandler = function(req, res) {
-  model.kick(req.query.Name);
-  return getStateHandler(req, res);
+  return header(req, res)
+    .then(() => model.kick(req.query.Name))
+    .then(s => res.send(s));
 };
 
 var resetHandler = function(req, res) {
-  model.reset();
-  return getStateHandler(req, res);
+  return header(req, res)
+    .then(model.reset)
+    .then(s => res.send(s));
 };
 
 var clearHandler = function(req, res) {
-  model.clear();
-  return getStateHandler(req, res);
+  return header(req, res)
+    .then(model.clear)
+    .then(s => res.send(s));
 };
 
 // Routing
