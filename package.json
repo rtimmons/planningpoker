@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "stop": "pkill poker"
+    "stop": "pkill poker",
+    "test": "snyk test"
   },
   "author": "",
   "license": "ISC",
@@ -20,5 +21,8 @@
     "request": "^2.87.0",
     "underscore": "^1.9.1",
     "x-xss-protection": "^1.1.0"
+  },
+  "devDependencies": {
+    "snyk": "^1.89.0"
   }
 }
