@@ -31,3 +31,20 @@ input {
     float: right;
     font-size: 5em;
 }
+
+#Footer {
+    opacity: 0.1;
+    font-size: 0.5em;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+#Footer:hover {
+    opacity: 1;
+}
+#Footer a {
+    color: inherit;
+}
+#Footer a:hover {
+    color: inherit;
+}
