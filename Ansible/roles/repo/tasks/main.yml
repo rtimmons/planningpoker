@@ -1,5 +1,6 @@
 - name: copy planningpoker repo
   synchronize:
+      compress: yes
       group: no
       checksum: yes
       copy_links: yes
@@ -11,4 +12,7 @@
       delete: yes
       src: "{{ playbook_dir }}/.."
       dest: /home/ec2-user/planningpoker
-
+      rsync_opts:
+      # don't upload deps for Ansible and npm
+      - "--exclude=venv"
+      - "--exclude=node_modules"
