@@ -16,3 +16,5 @@
       # don't upload deps for Ansible and npm
       - "--exclude=venv"
       - "--exclude=node_modules"
+      - "--exclude=.git"
+
