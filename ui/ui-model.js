@@ -110,7 +110,7 @@ class UI {
   // helpers
 
   _registerVoteButton($b) {
-    var label = $b.html().trim();
+    var label = $b.text().trim();
     var score = $b.data('score');
     this.buttonLabelToPoint[label] = score;
     this.buttonPointToLabel[score] = label;
@@ -174,7 +174,7 @@ class UI {
 
   _handleKickClick($b) {
     // ohgod it's hard to be a parent these days
-    this.updateState('kick',{Name: $b.parent().parent().parent().find('.Name').html().trim()});
+    this.updateState('kick',{Name: $b.parent().parent().parent().find('.Name').text().trim()});
     return false;
   }
 
@@ -184,7 +184,7 @@ class UI {
       return false;
     }
     this.updateState('set', {
-      Vote: this.buttonLabelToPoint[$b.html().trim()],
+      Vote: this.buttonLabelToPoint[$b.text().trim()],
       Name: this.MyName
     });
     return false;
@@ -231,11 +231,11 @@ class UI {
   }
 
   _renderAverage(state) {
-    this.Average.find('span').html(state.computeAverage());
+    this.Average.find('span').text(state.computeAverage());
   }
 
   _renderIceCream(state) {
-    this.MaybeIceCream.html(state.reward());
+    this.MaybeIceCream.text(state.reward());
   }
 
   _renderQuestion(state) {
@@ -253,8 +253,8 @@ class UI {
     var cloned = this.Voters.clone(true).empty();
     _.each(state.renderableVotes(this.MyName, this.buttonPointToLabel),voteri => {
       cloned.append(this.rowTemplate.clone(true)
-        .find('.Name').html(voteri.Name).end()
-        .find('.Vote').html(voteri.Label).end()
+        .find('.Name').text(voteri.Name).end()
+        .find('.Vote').text(voteri.Label).end()
       );
     });
     return cloned;
