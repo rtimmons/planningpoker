@@ -14,9 +14,11 @@
     "cors": "^2.8.4",
     "deepcopy": "^1.0.0",
     "express": "^4.16.3",
+    "helmet": "^3.12.2",
     "node-cache": "^4.2.0",
     "promise": "^8.0.1",
     "request": "^2.87.0",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "x-xss-protection": "^1.1.0"
   }
 }

@@ -2,9 +2,12 @@
 
 // imports
 
+// TODO: these should be `const` and sorted to be consistent
 var express = require('express');
 var request = require('request');
-var cors = require('cors')
+var cors = require('cors');
+var xssFilter = require('x-xss-protection');
+var helmet = require('helmet')
 var bodyParser = require('body-parser');
 
 var model = require('./model.js');
@@ -17,7 +20,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
-app.use(express.static('ui'))
+app.use(express.static('ui'));
+app.use(xssFilter());
+app.use(helmet());
 
 // Routing
 
