@@ -20,9 +20,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
-app.use(express.static('ui'));
 app.use(xssFilter());
 app.use(helmet());
+
+app.use(express.static('ui'));
 
 // Routing
 
