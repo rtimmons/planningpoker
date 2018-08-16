@@ -53,6 +53,10 @@ class State {
           : (this.allSame() ? '🍦' : '😼');
   }
 
+  logbook() {
+    return this.serverState.Logbook || {};
+  }
+
   computeAverage() {
     var sum = 0.0;
     var n = 0.0;
@@ -88,8 +92,12 @@ class UI {
     this.Reset = $('#Reset');
     this.Average = $('#Average');
     this.MaybeIceCream = $('#MaybeIceCream');
+    this.Logbook = $('#Logbook');
+    this.AddToLogbook = $('#AddToLogbook');
 
+    // TODO: rename to voteRowTemplate
     this.rowTemplate = this.Voters.find('.template').clone(true);
+    this.logbookTemplate = this.Logbook.find('.template').clone(true);
 
     this.MyName = window.cookies.get('Name');
 
@@ -135,7 +143,15 @@ class UI {
 
     // need to use this versus .each cuz we create new a.kicks via .clone()
     this.Voters.on('click', 'a.kick', function(){
-      self._handleKickClick($(this));
+      return self._handleKickClick($(this));
+    });
+
+    this.Logbook.on('click', 'a.remove', function(){
+      return self._handleLogbookRemoveClick($(this));
+    });
+
+    this.AddToLogbook.click(function(){
+      return self._handleAddToLogbookClick();
     });
 
     this.Reset.click(function(){
@@ -175,6 +191,27 @@ class UI {
   _handleKickClick($b) {
     // ohgod it's hard to be a parent these days
     this.updateState('kick',{Name: $b.parent().parent().parent().find('.Name').text().trim()});
+    return false;
+  }
+
+  questionValue() {
+    return this.Question.find('input').val();
+  }
+
+  _handleAddToLogbookClick($b) {
+    this.updateState('recordlog', {
+      ID: new Date().getTime(),
+      Question: this.questionValue(),
+      Vote: this.Average.text(),
+    });
+    // TODO: rename or refactor, we're not handling a click just want to clear votes
+    this._handleClearClick();
+    this.Question.find('.input').val('').focus();
+    return false;
+  }
+
+  _handleLogbookRemoveClick($b) {
+    this.updateState('removelog', {ID: $b.parent().parent().parent().find('.ID').text().trim()});
     return false;
   }
 
@@ -227,6 +264,7 @@ class UI {
     this._renderQuestion(state);
     this._renderAverage(state);
     this._renderVoteTable(state);
+    this._renderLogbook(state);
     this._renderIceCream(state);
   }
 
@@ -241,6 +279,26 @@ class UI {
   _renderQuestion(state) {
     // update the question but only if not focused(==has cursor)
     this.Question.find('input:not(:focus)').val(state.question());
+  }
+
+  _renderLogbook(state) {
+    var logbookTable = this._generateLogbookTable(state);
+    this.Logbook.replaceWith(logbookTable);
+    this.Logbook = logbookTable;
+  }
+
+  _generateLogbookTable(state) {
+    var cloned = this.Logbook.clone(true).empty();
+    var book = state.logbook();
+    for(var k in book) {
+      var entry = book[k];
+      cloned.append(this.logbookTemplate.clone(true)
+        .find('.Question').text(entry.Question).end()
+        .find('.Vote').text(entry.Vote).end()
+        .find('.ID').text(k).end()
+      );
+    }
+    return cloned;
   }
 
   _renderVoteTable(state) {

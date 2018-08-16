@@ -10,13 +10,14 @@ and/or automated testing!
 
 /*
  20 voters max at (10 + 50)=60 chars per => max of 20*60=1200 bytes-ish + 100 for the question
- => we can consume on the order of 2kb of memory :)
+ Logbook can have 20 * (100 + 10 + timestamp=14) = 20*(124) = 2480 bytes
+ => we can consume on the order of 4kb of memory :)
 */
 const QUESTION_LIMIT = 100;
 const MAX_VOTERS     = 20;
 const NAME_LIMIT     = 50;
 const VOTE_LIMIT     = 10;
-
+const LOGBOOK_LIMIT  = 20;
 
 var timestamp = function() { return new Date().getTime(); };
 
@@ -27,7 +28,14 @@ const startState = {
     {"Name": "英津子",   "Vote": "8", "LastVoteTS": timestamp()},
     {"Name": "Deshawn", "Vote": "3", "LastVoteTS": timestamp()},
     {"Name": "Maqbool", "Vote": "😫?", "LastVoteTS": timestamp()}
-  ]
+  ],
+  Logbook: {
+    [timestamp()]: {
+      Question:"Move Mount Fuji to Dubai",
+      Vote: 3.5,
+      Timestamp: timestamp()
+    },
+  }
 };
 var state = deepcopy(startState);
 
@@ -39,7 +47,26 @@ var getStateJson = function() {
   if ((state.Voters || []).length >= MAX_VOTERS) {
     return reset();
   }
+  if ((state.Logbook || []).length >= LOGBOOK_LIMIT) {
+    return reset();
+  }
   return Promise.resolve(JSON.stringify(state));
+};
+
+var removeLogEntry = function(id) {
+  state.Logbook = state.Logbook || {};
+  delete state.Logbook[id];
+  return getStateJson();
+};
+
+var recordInLogbook = function(id, question, vote) {
+  state.Logbook = state.Logbook || {};
+  state.Logbook[id] = {
+    Question: shorten(question, QUESTION_LIMIT),
+    Vote: shorten(vote, VOTE_LIMIT),
+    Timestamp: timestamp(),
+  };
+  return getStateJson();
 };
 
 var setState = function(question, vname, vote) {
@@ -104,4 +131,6 @@ module.exports = {
   kick: kick,
   setState: setState,
   getStateJson: getStateJson,
+  recordInLogbook: recordInLogbook,
+  removeLogEntry: removeLogEntry,
 };

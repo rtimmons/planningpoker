@@ -68,6 +68,9 @@
         <br>
 
         <div id="DangerZone">
+            <span id="AddToLogbook">
+                <button type="button" class="btn btn-info">Add To Logbook</button>
+            </span>
             <span id="Clear">
                 <button type="button" class="btn btn-danger">Clear Votes</button>
             </span>
@@ -75,6 +78,17 @@
                 <button type="button" class="btn btn-danger">Reset 🤞</button>
             </span>
         </div>
+
+        <table class="table logbook" id="Logbook">
+            <tr class="template">
+                <td width="5%"><span class="action"><a href="#" class="remove">❌</a></span></td>
+                <th width="80%"><span class="Question">Loading...</span></th>
+                <td width="15%"><span class="Vote">...</span></td>
+                <!--TODO: hide -->
+                <td width="0%" class="hidden"><span class="ID">...</span></td>
+            </tr>
+        </table>
+
     </main><!-- /.container -->
 
 

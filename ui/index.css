@@ -27,9 +27,27 @@ input {
     margin-bottom: 0.5em;
 }
 
+#Summary {
+    font-size: 2em;
+}
+
+.hidden {
+    display: none;
+}
+
+
+#Reset {
+    margin-left: 5em;
+}
+
 #MaybeIceCream {
+    clear: both;
     float: right;
-    font-size: 5em;
+    font-size: 3em;
+}
+
+#Logbook {
+    margin-top: 5em;
 }
 
 #Footer {

@@ -49,6 +49,9 @@ http://localhost:3000/reset.json
 
 kick:
 http://localhost:3000/kick.json?Name=Abdul
+
+record in logbook:
+http://localhost:3000/recordlog.json?ID=1&Question=Foo&Vote=7
 */
 
 const header = (req, res) => {
@@ -79,6 +82,19 @@ app.get('/reset.json', function(req, res) {
 app.get('/clear.json', function(req, res) {
   return onModel(req, res, model.clear);
 });
+
+app.get('/recordlog.json', function(req, res) {
+  return onModel(req, res, model.recordInLogbook, [
+    req.query.ID, req.query.Question, req.query.Vote
+  ]);
+});
+
+app.get('/removelog.json', function(req, res) {
+  return onModel(req, res, model.removeLogEntry, [
+    req.query.ID
+  ]);
+});
+
 
 
 // 💪
