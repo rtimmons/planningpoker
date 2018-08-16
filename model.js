@@ -47,7 +47,7 @@ var getStateJson = function() {
   if ((state.Voters || []).length >= MAX_VOTERS) {
     return reset();
   }
-  if ((state.Logbook || []).length >= LOGBOOK_LIMIT) {
+  if (Object.keys(state.Logbook || {}).length >= LOGBOOK_LIMIT) {
     return reset();
   }
   return Promise.resolve(JSON.stringify(state));
