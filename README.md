@@ -37,9 +37,15 @@ TODO
 
 Features
 
+- Manually add logbook entries
+- Newest logbook entries on top
+- Edit logbook items
+- Some semblance of persistent state: Periodically flush state to disk and reload when starting
+
+- Flashy ice-cream if consensus
 - Better "enter your name" UI (at least: better color and `<input>` layout)
 - Ability to have more than one concurrent session
-- Ability to "accept" votes and add to a rendered "history" section
+
 - Make it more obvious who hasn't voted
 - Record when question was last changed. 
     - Auto-clear it if it hasn't changed in last N hours?
