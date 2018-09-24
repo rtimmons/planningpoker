@@ -1,5 +1,7 @@
 ;process.title = "poker"
 
+const PORT = process.env.PORT || 3000;
+
 // imports
 
 // TODO: these should be `const` and sorted to be consistent
@@ -99,4 +101,4 @@ app.get('/removelog.json', function(req, res) {
 
 // 💪
 
-app.listen(3000, () => console.log('Listening on port 3000!'));
+app.listen(PORT, () => console.log('Listening on port 3000!'));
