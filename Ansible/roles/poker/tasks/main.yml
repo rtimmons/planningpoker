@@ -1,2 +1,0 @@
-- debug:
-    msg: Deployed to http://{{ ansible_host }}:3000

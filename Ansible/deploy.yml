@@ -1,8 +1,0 @@
-- name: apply roles
-  hosts: servers
-  roles:
-   - { name: poker }
-
-  pre_tasks:
-  - name: import vars
-    include_vars: main.yml

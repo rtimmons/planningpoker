@@ -1,5 +1,0 @@
----
-dependencies:
-  - { role: express-server }
-
-
