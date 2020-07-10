@@ -4,4 +4,4 @@ Made with ❤️ and 🍣 in NYC by Ryan
     Source:     http://github.com/rtimmons/planningpoker
     License:    https://github.com/rtimmons/planningpoker/blob/master/LICENSE
 
-© 2018. Use at own risk.
+© 2018 - Present. Use at own risk.

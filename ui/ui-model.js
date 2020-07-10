@@ -1,10 +1,12 @@
-var url = function(part) {
-  var loc = window.location.origin != "null" 
+var $ = jQuery;
+
+const url = function(part) {
+  var loc = window.location.origin !== "null"
     ? window.location.origin : 'http://localhost:3000';
   return loc + '/' + part + '.json';
 };
 
-var request = function(part, params) {
+const request = function(part, params) {
   return $.get({
     url: url(part),
     data: params,
@@ -16,14 +18,14 @@ class State {
   constructor(serverState) {
     this.serverState = serverState;
     this.votes = _.collect(this.serverState.Voters || [], v => v.Vote);
-    this._anyPendingVoters = this.votes.length == 0 || _.any(this.votes, v => _.isUndefined(v) || v === '');
-    this._allSame = this.votes.length == 0 || _.all(this.votes, v => v === this.votes[0]);
+    this._anyPendingVoters = this.votes.length === 0 || _.any(this.votes, v => _.isUndefined(v) || v === '');
+    this._allSame = this.votes.length === 0 || _.all(this.votes, v => v === this.votes[0]);
   }
-  
+
   question() {
     return this.serverState.Question;
   }
-  
+
   anyPendingVoters() {
     return this._anyPendingVoters;
   }
@@ -37,11 +39,11 @@ class State {
   }
 
   renderableVotes(myName, buttonPointToLabel) {
-    var showVotes = !this.anyPendingVoters();
+    const showVotes = !this.anyPendingVoters();
     return this.eachVoter(v => {
       return {
         Name: v.Name,
-        Label: showVotes || v.Name === myName ? 
+        Label: showVotes || v.Name === myName ?
           buttonPointToLabel[v.Vote] :
           (_.isUndefined(v.Vote) ? '🤔': '🙈')
       }
@@ -58,16 +60,16 @@ class State {
   }
 
   computeAverage() {
-    var sum = 0.0;
-    var n = 0.0;
+    let sum = 0.0;
+    let n = 0.0;
 
-    var allDone = true;
-    var allNumbers = true;
-    for(var k in (this.serverState.Voters || [])) {
+    let allDone = true;
+    let allNumbers = true;
+    for(let k in (this.serverState.Voters || [])) {
       if (_.isUndefined(this.serverState.Voters[k].Vote)) {
         allDone = false;
       }
-      var points = parseInt(this.serverState.Voters[k].Vote);
+      const points = parseInt(this.serverState.Voters[k].Vote);
       if (_.isNaN(points)) {
         allNumbers = false;
       }
@@ -118,8 +120,8 @@ class UI {
   // helpers
 
   _registerVoteButton($b) {
-    var label = $b.text().trim();
-    var score = $b.data('score');
+    const label = $b.text().trim();
+    const score = $b.data('score');
     this.buttonLabelToPoint[label] = score;
     this.buttonPointToLabel[score] = label;
   }
@@ -132,7 +134,7 @@ class UI {
   }
 
   _initButtons() {
-    var self = this;
+    const self = this;
     this.Buttons.find('button')
       .each(function(){
         return self._registerVoteButton($(this));
@@ -176,8 +178,8 @@ class UI {
     this.Name.find('input')
       .blur(onNameChange)
       .submit(onNameChange)
-      .keyup(function(e){
-        if (e.which == 13) { // enter
+      .keyup(() => {
+        if (e.which === 13) { // enter
           return $(this).blur();
         }
       });
@@ -198,7 +200,7 @@ class UI {
     return this.Question.find('input').val();
   }
 
-  _handleAddToLogbookClick($b) {
+  _handleAddToLogbookClick() {
     this.updateState('recordlog', {
       ID: new Date().getTime(),
       Question: this.questionValue(),
@@ -282,16 +284,16 @@ class UI {
   }
 
   _renderLogbook(state) {
-    var logbookTable = this._generateLogbookTable(state);
+    const logbookTable = this._generateLogbookTable(state);
     this.Logbook.replaceWith(logbookTable);
     this.Logbook = logbookTable;
   }
 
   _generateLogbookTable(state) {
-    var cloned = this.Logbook.clone(true).empty();
-    var book = state.logbook();
-    for(var k in book) {
-      var entry = book[k];
+    const cloned = this.Logbook.clone(true).empty();
+    const book = state.logbook();
+    for(let k in book) {
+      const entry = book[k];
       cloned.append(this.logbookTemplate.clone(true)
         .find('.Question').text(entry.Question).end()
         .find('.Vote').text(entry.Vote).end()
@@ -302,13 +304,13 @@ class UI {
   }
 
   _renderVoteTable(state) {
-    var voteTable = this._generateVoteTable(state);
+    const voteTable = this._generateVoteTable(state);
     this.Voters.replaceWith(voteTable);
     this.Voters = voteTable;
   }
 
   _generateVoteTable(state) {
-    var cloned = this.Voters.clone(true).empty();
+    const cloned = this.Voters.clone(true).empty();
     _.each(state.renderableVotes(this.MyName, this.buttonPointToLabel),voteri => {
       cloned.append(this.rowTemplate.clone(true)
         .find('.Name').text(voteri.Name).end()
