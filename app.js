@@ -4,19 +4,17 @@ const PORT = process.env.PORT || 3000;
 
 // imports
 
-// TODO: these should be `const` and sorted to be consistent
-var express = require('express');
-var request = require('request');
-var cors = require('cors');
-var xssFilter = require('x-xss-protection');
-var helmet = require('helmet')
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const express = require('express');
+const helmet = require('helmet');
+const xssFilter = require('x-xss-protection');
 
-var model = require('./model.js');
+const model = require('./model.js');
 
 // setup
 
-var app = express();
+const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
