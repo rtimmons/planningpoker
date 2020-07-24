@@ -4,11 +4,13 @@ const PORT = process.env.PORT || 3000;
 
 // imports
 
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const express = require('express');
-const helmet = require('helmet');
-const xssFilter = require('x-xss-protection');
+import * as bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
+
+// @ts-ignore
+import xssFilter from 'x-xss-protection';
 
 const model = require('./model.js');
 
@@ -23,7 +25,7 @@ app.use(cors());
 app.use(xssFilter());
 app.use(helmet());
 
-app.use(express.static('ui'));
+app.use(express.static('../ui'));
 
 // Routing
 
@@ -54,36 +56,38 @@ record in logbook:
 http://localhost:3000/recordlog.json?ID=1&Question=Foo&Vote=7
 */
 
-const header = (req, res) => {
+const header = (req: express.Request, res: express.Response) => {
   res.header('Content-Type', 'application/json')
   return Promise.resolve();
 };
 
-function onModel(req, res, f, args) {
+function onModel(req: express.Request, res: express.Response, f: any, args?: any) {
   return header(req, res)
     .then(() => f.apply(model, args || []))
     .then(s => res.send(s));
 }
 
-app.get('/state.json', function(req, res){
+app.get('/state.json', function(req: express.Request, res: express.Response) {
   return onModel(req, res, model.getStateJson)
 });
-app.get('/set.json', function(req, res) {
+
+app.get('/set.json', (req: express.Request, res: express.Response) => {
   return onModel(req, res, model.setState, [
     req.query.Question, req.query.Name, req.query.Vote
   ]);
 });
-app.get('/kick.json', function(req, res) {
+
+app.get('/kick.json', (req: express.Request, res: express.Response) => {
   return onModel(req, res, model.kick, [req.query.Name]);
 });
-app.get('/reset.json', function(req, res) {
+app.get('/reset.json', (req: express.Request, res: express.Response) => {
   return onModel(req, res, model.reset);
 });
-app.get('/clear.json', function(req, res) {
+app.get('/clear.json', (req: express.Request, res: express.Response) => {
   return onModel(req, res, model.clear);
 });
 
-app.get('/recordlog.json', function(req, res) {
+app.get('/recordlog.json', (req: express.Request, res: express.Response) => {
   return onModel(req, res, model.recordInLogbook, [
     req.query.ID, req.query.Question, req.query.Vote
   ]);

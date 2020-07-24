@@ -1,6 +1,6 @@
-const Promise = require('promise');
-const _ = require('underscore');
-const deepcopy = require('deepcopy');
+import * as _ from 'underscore';
+// @ts-ignore
+import deepcopy from 'deepcopy';
 
 /*
 Business-logic for back-end.
@@ -19,7 +19,9 @@ const NAME_LIMIT     = 50;
 const VOTE_LIMIT     = 10;
 const LOGBOOK_LIMIT  = 20;
 
-var timestamp = function() { return new Date().getTime(); };
+const timestamp = function () {
+  return new Date().getTime();
+};
 
 const startState = {
   Question: "So, uh, how's that Python 3 coming along?",
@@ -37,29 +39,29 @@ const startState = {
     },
   }
 };
-var state = deepcopy(startState);
+let state = deepcopy(startState);
 
-var shorten = function(str, max) {
-  return (_.isUndefined(str) || !_.isString(str)) ? str : (str.length >= max ? str.substring(0,max-1) : str);
-}
+const shorten = function (str: string, max: number) {
+  return (_.isUndefined(str) || !_.isString(str)) ? str : (str.length >= max ? str.substring(0, max - 1) : str);
+};
 
-var getStateJson = function() {
+async function getStateJson(): Promise<string> {
   if ((state.Voters || []).length >= MAX_VOTERS) {
     return reset();
   }
   if (Object.keys(state.Logbook || {}).length >= LOGBOOK_LIMIT) {
     return reset();
   }
-  return Promise.resolve(JSON.stringify(state));
-};
+  return JSON.stringify(state);
+}
 
-var removeLogEntry = function(id) {
+async function removeLogEntry(id: number): Promise<string> {
   state.Logbook = state.Logbook || {};
   delete state.Logbook[id];
   return getStateJson();
-};
+}
 
-var recordInLogbook = function(id, question, vote) {
+async function recordInLogbook(id: number, question: string, vote: any): Promise<string> {
   state.Logbook = state.Logbook || {};
   state.Logbook[id] = {
     Question: shorten(question, QUESTION_LIMIT),
@@ -67,10 +69,10 @@ var recordInLogbook = function(id, question, vote) {
     Timestamp: timestamp(),
   };
   return getStateJson();
-};
+}
 
-var setState = function(question, vname, vote) {
-  var existing, voter;
+async function setState(question: string, vname: string, vote: any): Promise<string> {
+  let existing, voter;
 
   // can set question even if other errors
   state.Question = question || state.Question;
@@ -102,9 +104,9 @@ var setState = function(question, vname, vote) {
   }
 
   return getStateJson();
-};
+}
 
-var kick = function(vname) {
+async function kick(vname: string): Promise<string> {
   vname = shorten(vname, NAME_LIMIT);
   state.Voters = _.reject(state.Voters, (v) => v.Name == vname);
 

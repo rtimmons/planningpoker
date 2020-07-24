@@ -2,11 +2,20 @@
   "name": "express-server",
   "version": "1.0.0",
   "description": "api for smarterhome",
-  "main": "app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "start": "node app.js",
+    "serve": "node dist/app.js",
+    "start": "npm run serve",
     "stop": "pkill poker",
-    "test": "snyk test"
+    "test": "snyk test",
+    "build-ts": "tsc; cp -r ./src/ui dist/ui",
+    "tsc": "npm run build-ts",
+    "postinstall": "npm run build-ts",
+    "watch-node": "nodemon dist/app.js",
+    "watch-ts": "tsc -w"
+  },
+  "engines": {
+    "node": "8.11.4"
   },
   "author": "",
   "license": "ISC",
@@ -19,10 +28,16 @@
     "node-cache": "^4.2.0",
     "promise": "^8.0.2",
     "request": "^2.88.0",
+    "typescript": "^3.9.7",
     "underscore": "^1.9.1",
     "x-xss-protection": "^1.1.0"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/cors": "^2.8.6",
+    "@types/helmet": "0.0.47",
+    "@types/underscore": "^1.10.13",
+    "nodemon": "^2.0.4",
     "snyk": "^1.89.0"
   }
 }
