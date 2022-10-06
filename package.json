@@ -23,6 +23,6 @@
     "x-xss-protection": "^1.1.0"
   },
   "devDependencies": {
-    "snyk": "^1.89.0"
+    "snyk": "^1.1024.0"
   }
 }
